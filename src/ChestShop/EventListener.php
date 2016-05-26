@@ -1,5 +1,4 @@
 <?php
-
 namespace ChestShop;
 
 use pocketmine\event\block\BlockBreakEvent;
@@ -12,19 +11,16 @@ use pocketmine\level\Position;
 use pocketmine\math\Vector3;
 use pocketmine\tile\Chest as TileChest;
 
-class EventListener implements Listener
-{
+class EventListener implements Listener {
     private $plugin;
     private $databaseManager;
 
-    public function __construct(ChestShop $plugin, DatabaseManager $databaseManager)
-    {
+    public function __construct(ChestShop $plugin, DatabaseManager $databaseManager) {
         $this->plugin = $plugin;
         $this->databaseManager = $databaseManager;
     }
 
-    public function onPlayerInteract(PlayerInteractEvent $event)
-    {
+    public function onPlayerInteract(PlayerInteractEvent $event) {
         $block = $event->getBlock();
         $player = $event->getPlayer();
 
@@ -40,7 +36,7 @@ class EventListener implements Listener
                     $player->sendMessage("Cannot purchase from your own shop!");
                     return;
                 }
-                $buyerMoney = $this->plugin->getServer()->getPluginManager()->getPlugin("PocketMoney")->getMoney($player->getName());
+                $buyerMoney = $this->plugin->getServer()->getMoneyManager()->getMoney($player->getName());
                 if (!is_numeric($buyerMoney)) { // Probably $buyerMoney is instance of SimpleError
                     $player->sendMessage("Couldn't acquire your money data!");
                     return;
@@ -109,8 +105,7 @@ class EventListener implements Listener
         }
     }
 
-    public function onPlayerBreakBlock(BlockBreakEvent $event)
-    {
+    public function onPlayerBreakBlock(BlockBreakEvent $event) {
         $block = $event->getBlock();
         $player = $event->getPlayer();
 
@@ -157,8 +152,7 @@ class EventListener implements Listener
         }
     }
 
-    public function onSignChange(SignChangeEvent $event)
-    {
+    public function onSignChange(SignChangeEvent $event) {
         $shopOwner = $event->getPlayer()->getName();
         $saleNum = $event->getLine(1);
         $price = $event->getLine(2);
@@ -184,8 +178,7 @@ class EventListener implements Listener
         $this->databaseManager->registerShop($shopOwner, $saleNum, $price, $pID, $pMeta, $sign, $chest);
     }
 
-    private function getSideChest(Position $pos)
-    {
+    private function getSideChest(Position $pos) {
         $block = $pos->getLevel()->getBlock(new Vector3($pos->getX() + 1, $pos->getY(), $pos->getZ()));
         if ($block->getID() === Block::CHEST) return $block;
         $block = $pos->getLevel()->getBlock(new Vector3($pos->getX() - 1, $pos->getY(), $pos->getZ()));
@@ -197,8 +190,7 @@ class EventListener implements Listener
         return false;
     }
 
-    private function isItem($id)
-    {
+    private function isItem($id) {
         if (isset(Item::$list[$id])) return true;
         if (isset(Block::$list[$id])) return true;
         return false;
