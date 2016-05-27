@@ -1,14 +1,12 @@
 name: ChestShop
 main: ChestShop\ChestShop
-version: 2.0.1
-api: [1.10.0]
-load: POSTWORLD
-author: MinecrafterJPN
-authors: [MinecrafterJPN]
-description: Open your ChestShop
-website: https://github.com/MinecrafterJPN/ChestShop
-depend:
+version: 3.0.0
+api: [1.13.1, 2.0.0]
+author: "MinecrafterJPN & LostTeam"
+description: "Create Your own shop in a chest!"
+softdepend:
  - PocketMoney
+ - EconomyAPI
 commands:
  id:
   description: Search item ID
