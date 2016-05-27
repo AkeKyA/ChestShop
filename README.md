@@ -3,9 +3,9 @@
 
 # How to use your chest shop:
 
-1. Place a chest
-2. Put items you want to sell into the chest
-3. Place a sign on the front of the chest
+- 1. Place a chest
+- 2. Put item you want to sell into the chest
+- 3. Place a sign on the chest
 
   **You must use the following format**
   
@@ -20,4 +20,4 @@
 
 # How to purchase from other chest shops:
 
-1. Tap the sign!
+- 1. Tap the sign!
