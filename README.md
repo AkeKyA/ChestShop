@@ -6,16 +6,16 @@
 2. Put item you want to sell into the chest
 3. Place a sign on the chest
 
-   **You must use the following format**
+  **You must use the following format**
   
   | Line # | Value |
   | :------: | :---: |
-  | 1 | Blank(You must not write anything) |
-  | 2 | Number you want to sell per one transaction |
+  | 1 | Blank(You can't type anything) |
+  | 2 | Number you want to sell per transaction |
   | 3 | Price |
   | 4 | Item ID |
   
-  If you don't know ID, you should use id search command `/id <itemname>`
+  If you don't know ID, you should use id search command `/id <Item Name>`
 
 ## How to purchase from other chest shops:
 
