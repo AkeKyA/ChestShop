@@ -1,36 +1,23 @@
 # ChestShop
+###Open your ChestShop.
 
-Open your ChestShop.
+# How to use your chest shop:
 
-# Installation
-1.  Drop it into your /plugins folder.
-2.  Restart your server.
-
-# How to open your chest shop
-
-1. Locate a chest
-![Locate a chest box](https://dl.dropboxusercontent.com/s/p6oh22ipybt103q/pic1.jpg)
-
+1. Place a chest
 2. Put items you want to sell into the chest
-![Put items you want to sell into the chest box](https://dl.dropboxusercontent.com/s/rf60dfcp7oghds8/pic2.jpg)
+3. place a sign on the front of the chest
 
-3. Locate a sign next to the chest
-
-  **You must follow the following format**
+  **You must use the following format**
   
-  | Line No. | Value |
+  | Line # | Value |
   | :------: | :---: |
   | 1 | Blank(You must not write anything) |
   | 2 | Number you want to sell per one transaction |
   | 3 | Price |
   | 4 | Item ID |
   
-  If you don't know ID, you should use id search command `/id <itemname>`  
-  
-4. ID is changed to item name automatically
+  If you don't know ID, you should use id search command `/id <itemname>`
 
-![Locate a sign next to Chest](https://dl.dropboxusercontent.com/s/zfe7a3v1tf8s9w6/pic3.jpg)
+# How to purchase from other chest shops:
 
-# How to purchase from others' chest shop
-
-1. Only tap the sign
+1. Tap the sign!
