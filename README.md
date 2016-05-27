@@ -6,7 +6,7 @@
 2. Put item you want to sell into the chest
 3. Place a sign on the chest
 
-  **You must use the following format**
+   **You must use the following format**
   
   | Line # | Value |
   | :------: | :---: |
