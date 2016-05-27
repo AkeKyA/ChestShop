@@ -2,10 +2,9 @@
 ###Open your ChestShop.
 
 # How to use your chest shop:
-
-- 1. Place a chest
-- 2. Put item you want to sell into the chest
-- 3. Place a sign on the chest
+1. Place a chest
+2. Put item you want to sell into the chest
+3. Place a sign on the chest
 
   **You must use the following format**
   
