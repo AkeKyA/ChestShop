@@ -3,7 +3,8 @@ namespace ChestShop;
 
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
-use pocketmine\plugin\PluginBase;
+use pocketmine\Player;
+use pocketmine\plugin\PluginBase
 use pocketmine\utils\TextFormat as TF;
 
 class ChestShop extends PluginBase {
@@ -17,11 +18,30 @@ class ChestShop extends PluginBase {
             $this->moneyManager = $this->getServer()->getPluginManager()->getPlugin("EconomyAPI");
             $this->getLogger()->info("Money Manager set to EconomyAPI");
         }else{
-            //
+            $this->getLogger()->error("No Economy Plugin Detected!");
         }
         $this->getServer()->getPluginManager()->registerEvents(new EventListener($this, new DatabaseManager($this->getDataFolder() . 'ChestShop.sqlite3')), $this);
         $this->getLogger->notice(TF::GREEEN."Enabled!");
     }
+    
+    public function getMoney(Player $player) {
+        if($this->moneyManager instanceof $this->getServer()->getPluginManager()->getPlugin("EconomyAPI")) {
+            return $this->moneyManager-> //EconomyAPI get money method
+        }elseif($this->moneyManager instanceof $this->getServer()->getPluginManager()->getPlugin("PocketMoney")) {
+            return $this->moneyManager->getMoney($player->getName());
+        }
+        return null;
+    }
+    
+    public function payMoney(Player $player, $Owner, $Cost) {
+        if($this->moneyManager instanceof $this->getServer()->getPluginManager()->getPlugin("EconomyAPI")) {
+            return $this->moneyManager-> //EconomyAPI pay money method
+        }elseif($this->moneyManager instanceof $this->getServer()->getPluginManager()->getPlugin("PocketMoney")) {
+            return $this->moneyManager->payMoney($player->getName(), $Owner, $Cost);
+        }
+        return false;
+    }
+    
     public function onDisable() {
         $this->getLogger->notice(TF::GREEEN."Disabled!");
     }
