@@ -5,7 +5,7 @@
 
 1. Place a chest
 2. Put items you want to sell into the chest
-3. place a sign on the front of the chest
+3. Place a sign on the front of the chest
 
   **You must use the following format**
   
