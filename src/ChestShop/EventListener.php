@@ -36,8 +36,8 @@ class EventListener implements Listener {
                     $player->sendMessage("Cannot purchase from your own shop!");
                     return;
                 }
-                $buyerMoney = $this->plugin->getServer()->getMoneyManager()->getMoney($player->getName());
-                if (!is_numeric($buyerMoney)) { // Probably $buyerMoney is instance of SimpleError
+                $buyerMoney = $this->plugin->getMoney($player->getName());
+                if (!is_numeric($buyerMoney)) {
                     $player->sendMessage("Couldn't acquire your money data!");
                     return;
                 }
@@ -45,7 +45,6 @@ class EventListener implements Listener {
                     $player->sendMessage("Your money is not enough!");
                     return;
                 }
-                /** @var TileChest $chest */
                 $chest = $player->getLevel()->getTile(new Vector3($shopInfo['chestX'], $shopInfo['chestY'], $shopInfo['chestZ']));
                 $itemNum = 0;
                 $pID = $shopInfo['productID'];
@@ -80,11 +79,11 @@ class EventListener implements Listener {
                         }
                     }
                 }
-                $this->plugin->getServer()->getPluginManager()->getPlugin("PocketMoney")->payMoney($player->getName(), $shopInfo['shopOwner'], $shopInfo['price']);
+                $this->plugin->payMoney($player, $shopInfo['shopOwner'], $shopInfo['price']);
 
                 $player->sendMessage("Completed transaction");
                 if (($p = $this->plugin->getServer()->getPlayer($shopInfo['shopOwner'])) !== null) {
-                    $p->sendMessage("{$player->getName()} purchased ID:$pID:$pMeta {$shopInfo['price']}PM");
+                    $p->sendMessage("{$player->getName()} purchased ID:$pID:$pMeta '$'{$shopInfo['price']}");
                 }
                 break;
 
@@ -95,7 +94,7 @@ class EventListener implements Listener {
                     "chestZ" => $block->getZ()
                 ]);
                 if ($shopInfo !== false && $shopInfo['shopOwner'] !== $player->getName()) {
-                    $player->sendMessage("This chest has been protected!");
+                    $player->sendMessage("This chest is protected!");
                     $event->setCancelled();
                 }
                 break;
