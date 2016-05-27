@@ -1,9 +1,8 @@
 # ChestShop
 ###Open your ChestShop.
 
-# How to use your chest shop:
+## How to use your chest shop:
 1. Place a chest
-<br>
 2. Put item you want to sell into the chest
 3. Place a sign on the chest
 
@@ -18,6 +17,6 @@
   
   If you don't know ID, you should use id search command `/id <itemname>`
 
-# How to purchase from other chest shops:
+## How to purchase from other chest shops:
 
 - 1. Tap the sign!
