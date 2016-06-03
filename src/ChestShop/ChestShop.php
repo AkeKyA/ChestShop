@@ -4,7 +4,7 @@ namespace ChestShop;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\Player;
-use pocketmine\plugin\PluginBase
+use pocketmine\plugin\PluginBase;
 use pocketmine\utils\TextFormat as TF;
 
 class ChestShop extends PluginBase {
