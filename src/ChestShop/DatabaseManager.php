@@ -1,18 +1,11 @@
 <?php
-
 namespace ChestShop;
 
 use pocketmine\block\Block;
 
-class DatabaseManager
-{
+class DatabaseManager {
     private $database;
-
-    /**
-     * @param string $path
-     */
-    public function __construct($path)
-    {
+    public function __construct($path) {
         $this->database = new \SQLite3($path);
         $sql = "CREATE TABLE IF NOT EXISTS ChestShop(
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -30,46 +23,18 @@ class DatabaseManager
 		)";
         $this->database->exec($sql);
     }
-
-    /**
-     * register shop to database
-     *
-     * @param string $shopOwner
-     * @param int $saleNum
-     * @param int $price
-     * @param int $productID
-     * @param int $productMeta
-     * @param Block $sign
-     * @param Block $chest
-     * @return bool
-     */
-    public function registerShop($shopOwner, $saleNum, $price, $productID, $productMeta, $sign, $chest)
-    {
+    public function registerShop($shopOwner, $saleNum, $price, $productID, $productMeta, $sign, $chest) {
         return $this->database->exec("INSERT INTO ChestShop (shopOwner, saleNum, price, productID, productMeta, signX, signY, signZ, chestX, chestY, chestZ) VALUES ('$shopOwner', $saleNum, $price, $productID, $productMeta, $sign->x, $sign->y, $sign->z, $chest->x, $chest->y, $chest->z)");
     }
-
-    /**
-     * @param array $condition
-     * @return array|false
-     */
-    public function selectByCondition(array $condition)
-    {
+    public function selectByCondition(array $condition) {
         $where = $this->formatCondition($condition);
         return ($res = $this->database->query("SELECT * FROM ChestShop WHERE $where")) === false ? false : $res->fetchArray(SQLITE3_ASSOC);
     }
-
-    /**
-     * @param array $condition
-     * @return bool
-     */
-    public function deleteByCondition(array $condition)
-    {
+    public function deleteByCondition(array $condition) {
         $where = $this->formatCondition($condition);
         return $this->database->exec("DELETE FROM ChestShop WHERE $where");
     }
-
-    private function formatCondition(array $condition)
-    {
+    private function formatCondition(array $condition) {
         $result = "";
         $first = true;
         foreach ($condition as $key => $val) {
@@ -79,4 +44,4 @@ class DatabaseManager
         }
         return trim($result);
     }
-} 
+}
