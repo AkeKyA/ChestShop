@@ -24,7 +24,7 @@ class EventListener implements Listener {
         $block = $event->getBlock();
         $player = $event->getPlayer();
 
-        switch ($block->getID()) {
+        switch ($block->getId()) {
             case Block::SIGN_POST:
             case Block::WALL_SIGN:
                 if (($shopInfo = $this->databaseManager->selectByCondition([
@@ -36,7 +36,7 @@ class EventListener implements Listener {
                     $player->sendMessage("Cannot purchase from your own shop!");
                     return;
                 }
-                $buyerMoney = $this->plugin->getMoney($player->getName());
+                $buyerMoney = $this->plugin->getMoney($player);
                 if (!is_numeric($buyerMoney)) {
                     $player->sendMessage("Couldn't acquire your money data!");
                     return;
@@ -46,18 +46,23 @@ class EventListener implements Listener {
                     return;
                 }
                 $chest = $player->getLevel()->getTile(new Vector3($shopInfo['chestX'], $shopInfo['chestY'], $shopInfo['chestZ']));
+                if($chest instanceof TileChest);
                 $itemNum = 0;
                 $pID = $shopInfo['productID'];
                 $pMeta = $shopInfo['productMeta'];
                 for ($i = 0; $i < $chest->getSize(); $i++) {
                     $item = $chest->getInventory()->getItem($i);
-                    // use getDamage() method to get metadata of item
-                    if ($item->getID() === $pID and $item->getDamage() === $pMeta) $itemNum += $item->getCount();
+                    if($item instanceof Item);
+                    if ($item->getId() === $pID and $item->getDamage() === $pMeta) $itemNum += $item->getCount();
                 }
                 if ($itemNum < $shopInfo['saleNum']) {
                     $player->sendMessage("This shop is out of stock!");
                     if (($p = $this->plugin->getServer()->getPlayer($shopInfo['shopOwner'])) !== null) {
-                        $p->sendMessage("Your ChestShop is out of stock! Replenish ID:$pID!");
+                        if($pMeta !== null) {
+                            $p->sendMessage("Your ChestShop is out of stock! Replenish ID: $pID:$pMeta !");
+                        }else{
+                            $p->sendMessage("Your ChestShop is out of stock! Replenish ID: $pID !");
+                        }
                     }
                     return;
                 }
@@ -69,12 +74,12 @@ class EventListener implements Listener {
                 for ($i = 0; $i < $chest->getSize(); $i++) {
                     $item = $chest->getInventory()->getItem($i);
                     // Use getDamage() method to get metadata of item
-                    if ($item->getID() === $pID and $item->getDamage() === $pMeta) {
+                    if ($item->getId() === $pID and $item->getDamage() === $pMeta) {
                         if ($item->getCount() <= $tmpNum) {
-                            $chest->getInventory()->setItem($i, Item::get(Item::AIR, 0, 0));
+                            $chest->getInventory()->removeItem(clone Item::get((int)$shopInfo['productID'], (int)$shopInfo['productMeta'], (int)$shopInfo['saleNum']));  //->setItem($i, Item::get(Item::AIR, 0, 0));
                             $tmpNum -= $item->getCount();
                         } else {
-                            $chest->getInventory()->setItem($i, Item::get($item->getID(), $pMeta, $item->getCount() - $tmpNum));
+                            $chest->getInventory()->setItem($i, Item::get($item->getId(), $pMeta, $item->getCount() - $tmpNum));
                             break;
                         }
                     }
@@ -83,7 +88,11 @@ class EventListener implements Listener {
 
                 $player->sendMessage("Completed transaction");
                 if (($p = $this->plugin->getServer()->getPlayer($shopInfo['shopOwner'])) !== null) {
-                    $p->sendMessage("{$player->getName()} purchased ID:$pID:$pMeta '$'{$shopInfo['price']}");
+                    if($pMeta !== null) {
+                        $p->sendMessage("{$player->getName()} purchased ID: $pID:$pMeta '$'{$shopInfo['price']}");
+                    }else{
+                        $p->sendMessage("{$player->getName()} purchased ID: $pID '$'{$shopInfo['price']}");
+                    }
                 }
                 break;
 
@@ -108,7 +117,7 @@ class EventListener implements Listener {
         $block = $event->getBlock();
         $player = $event->getPlayer();
 
-        switch ($block->getID()) {
+        switch ($block->getId()) {
             case Block::SIGN_POST:
             case Block::WALL_SIGN:
                 $condition = [
@@ -179,13 +188,13 @@ class EventListener implements Listener {
 
     private function getSideChest(Position $pos) {
         $block = $pos->getLevel()->getBlock(new Vector3($pos->getX() + 1, $pos->getY(), $pos->getZ()));
-        if ($block->getID() === Block::CHEST) return $block;
+        if ($block->getId() === Block::CHEST) return $block;
         $block = $pos->getLevel()->getBlock(new Vector3($pos->getX() - 1, $pos->getY(), $pos->getZ()));
-        if ($block->getID() === Block::CHEST) return $block;
+        if ($block->getId() === Block::CHEST) return $block;
         $block = $pos->getLevel()->getBlock(new Vector3($pos->getX(), $pos->getY(), $pos->getZ() + 1));
-        if ($block->getID() === Block::CHEST) return $block;
+        if ($block->getId() === Block::CHEST) return $block;
         $block = $pos->getLevel()->getBlock(new Vector3($pos->getX(), $pos->getY(), $pos->getZ() - 1));
-        if ($block->getID() === Block::CHEST) return $block;
+        if ($block->getId() === Block::CHEST) return $block;
         return false;
     }
 
@@ -194,4 +203,4 @@ class EventListener implements Listener {
         if (isset(Block::$list[$id])) return true;
         return false;
     }
-} 
+}
