@@ -8,39 +8,17 @@ softdepend:
  - PocketMoney
  - EconomyAPI
 commands:
- id:
-  usage: "Usage: /id <Item Name>"
-  description: "Search item ID"
-  permission: chestshop.cmd.id
- remove:
-  description: Remove the player's ChestShop
-  usage: "Usage: /remove <Player Name>"
-  permission: chestshop.cmd.remove
+  id:
+    usage: "Usage: /id <Item Name>"
+    description: "Search item ID"
+    permission: id.cmd
 permissions:
- chestshop.cmd:
-  default: op
-  description: "Allows using all the ChestShop things"
-  children:
-   chestshop.cmd.id:
+  id.cmd:
     default: true
-    description: "Allows using id command"
-    children:
-     chestshop.command.id:
-      default: true
-      description: "Allows searching item ID"
-     chestshop.command.remove:
-      default: op
-      description: "Allows removing player's ChestShop"
-   chestshop.cmd.remove:
+  chestshop.make:
     default: op
-    description: "Allows using remove command"
- chestshop.make:
-    default: op
-    description: ""
     children:
-     chestshop.make.1:
+     chestshop.make.3:
       default: true
-      description: ""
      chestshop.make.unlimited:
       default: op
-      description: ""

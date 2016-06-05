@@ -15,15 +15,22 @@ class EventListener implements Listener {
     private $plugin;
     private $databaseManager;
 
+    /**
+     * EventListener constructor.
+     * @param ChestShop $plugin
+     * @param DatabaseManager $databaseManager
+     */
     public function __construct(ChestShop $plugin, DatabaseManager $databaseManager) {
         $this->plugin = $plugin;
         $this->databaseManager = $databaseManager;
     }
 
+    /**
+     * @param PlayerInteractEvent $event
+     */
     public function onPlayerInteract(PlayerInteractEvent $event) {
         $block = $event->getBlock();
         $player = $event->getPlayer();
-
         switch ($block->getId()) {
             case Block::SIGN_POST:
             case Block::WALL_SIGN:
@@ -58,11 +65,8 @@ class EventListener implements Listener {
                 if ($itemNum < $shopInfo['saleNum']) {
                     $player->sendMessage("This shop is out of stock!");
                     if (($p = $this->plugin->getServer()->getPlayer($shopInfo['shopOwner'])) !== null) {
-                        if($pMeta !== null) {
-                            $p->sendMessage("Your ChestShop is out of stock! Replenish ID: $pID:$pMeta !");
-                        }else{
-                            $p->sendMessage("Your ChestShop is out of stock! Replenish ID: $pID !");
-                        }
+                        $productName = Item::fromString("$pID:$pMeta")->getName();
+                            $p->sendMessage("Your ChestShop is out of stock! Replenish ID: $productName !");
                     }
                     return;
                 }
@@ -72,7 +76,6 @@ class EventListener implements Listener {
                 $tmpNum = $shopInfo['saleNum'];
                 for ($i = 0; $i < $chest->getSize(); $i++) {
                     $item = $chest->getInventory()->getItem($i);
-                    // Use getDamage() method to get metadata of item
                     if ($item->getId() === $pID and $item->getDamage() === $pMeta) {
                         if ($item->getCount() <= $tmpNum) {
                             $chest->getInventory()->removeItem(clone Item::get((int)$shopInfo['productID'], (int)$shopInfo['productMeta'], (int)$shopInfo['saleNum']));  //->setItem($i, Item::get(Item::AIR, 0, 0));
@@ -112,6 +115,9 @@ class EventListener implements Listener {
         }
     }
 
+    /**
+     * @param BlockBreakEvent $event
+     */
     public function onPlayerBreakBlock(BlockBreakEvent $event) {
         $block = $event->getBlock();
         $player = $event->getPlayer();
@@ -159,6 +165,9 @@ class EventListener implements Listener {
         }
     }
 
+    /**
+     * @param SignChangeEvent $event
+     */
     public function onSignChange(SignChangeEvent $event) {
         $shopOwner = $event->getPlayer()->getName();
         $saleNum = $event->getLine(1);
@@ -169,22 +178,30 @@ class EventListener implements Listener {
 
         $sign = $event->getBlock();
 
-        // Check sign format...
+        // Check shop format...
         if ($event->getLine(0) !== "") return;
         if (!is_numeric($saleNum) or $saleNum <= 0) return;
         if (!is_numeric($price) or $price < 0) return;
         if ($pID === false) return;
         if (($chest = $this->getSideChest($sign)) === false) return;
+        //check shop count count to permission
+        $chest = $this->databaseManager->selectByCondition(["shopOwner" => $shopOwner]);
+        if (count($chest) >= 3 and !$event->getPlayer()->hasPermission("chestshop.make.unlimited")) return;
+        if (!$event->getPlayer()->hasPermission("chestshop.make.3")) return;
 
-        $productName = Block::get($pID)->getName();
+        $productName = Item::fromString($event->getLine(3))->getName();
         $event->setLine(0, $shopOwner);
         $event->setLine(1, "Amount:$saleNum");
         $event->setLine(2, "Price:$price");
-        $event->setLine(3, "$productName:$pMeta");
+        $event->setLine(3, "$productName");
 
         $this->databaseManager->registerShop($shopOwner, $saleNum, $price, $pID, $pMeta, $sign, $chest);
     }
 
+    /**
+     * @param Position $pos
+     * @return bool|Block
+     */
     private function getSideChest(Position $pos) {
         $block = $pos->getLevel()->getBlock(new Vector3($pos->getX() + 1, $pos->getY(), $pos->getZ()));
         if ($block->getId() === Block::CHEST) return $block;
@@ -193,6 +210,14 @@ class EventListener implements Listener {
         $block = $pos->getLevel()->getBlock(new Vector3($pos->getX(), $pos->getY(), $pos->getZ() + 1));
         if ($block->getId() === Block::CHEST) return $block;
         $block = $pos->getLevel()->getBlock(new Vector3($pos->getX(), $pos->getY(), $pos->getZ() - 1));
+        if ($block->getId() === Block::CHEST) return $block;
+        $block = $pos->getLevel()->getBlock(new Vector3($pos->getX(), $pos->getY(), $pos->getZ() + 2));
+        if ($block->getId() === Block::CHEST) return $block;
+        $block = $pos->getLevel()->getBlock(new Vector3($pos->getX(), $pos->getY(), $pos->getZ() - 2));
+        if ($block->getId() === Block::CHEST) return $block;
+        $block = $pos->getLevel()->getBlock(new Vector3($pos->getX() + 2, $pos->getY(), $pos->getZ()));
+        if ($block->getId() === Block::CHEST) return $block;
+        $block = $pos->getLevel()->getBlock(new Vector3($pos->getX() - 2, $pos->getY(), $pos->getZ()));
         if ($block->getId() === Block::CHEST) return $block;
         return false;
     }

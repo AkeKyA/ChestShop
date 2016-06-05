@@ -10,20 +10,22 @@ use pocketmine\utils\TextFormat as TF;
 use PocketMoney\PocketMoney;
 
 class ChestShop extends PluginBase {
-    public $moneyManager;
+    /*@var DatabaseManager $db */
+    public $moneyManager, $db;
     public function onEnable() {
         if (!file_exists($this->getDataFolder())) @mkdir($this->getDataFolder());
         if($this->getServer()->getPluginManager()->getPlugin("PocketMoney") !== null) {
             $this->moneyManager = $this->getServer()->getPluginManager()->getPlugin("PocketMoney");
             $this->getLogger()->info("Money Manager set to PocketMoney");
         }elseif($this->getServer()->getPluginManager()->getPlugin("EconomyAPI") !== null) {
-            $this->moneyManager = EconomyAPI::getInstance();
+            $this->moneyManager = $this->getServer()->getPluginManager()->getPlugin("EconomyAPI");
             $this->getLogger()->info("Money Manager set to EconomyAPI");
         }else{
             $this->getLogger()->error("No Economy Plugin Detected!");
             $this->getPluginLoader()->disablePlugin($this);
         }
-        $this->getServer()->getPluginManager()->registerEvents(new EventListener($this, new DatabaseManager($this->getDataFolder() . 'ChestShop.sqlite3')), $this);
+        $this->db = new DatabaseManager($this->getDataFolder() . 'ChestShop.sqlite3');
+        $this->getServer()->getPluginManager()->registerEvents(new EventListener($this, $this->db), $this);
         $this->getLogger()->notice(TF::GREEN."Enabled!");
     }
     
@@ -54,6 +56,10 @@ class ChestShop extends PluginBase {
     }
     public function onCommand(CommandSender $sender, Command $command, $label, array $args) {
         if(strtolower($command) === "id") {
+            if(!$sender->hasPermission("id.cmd")) {
+                $sender->sendMessage(TF::RED."You don't have permission to use that command!");
+                return true;
+            }
             if($args[0] === "help") {
                 $sender->sendMessage(TF::YELLOW."/id <Item name>");
                 return true;
