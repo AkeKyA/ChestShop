@@ -16,11 +16,12 @@ class ChestShop extends PluginBase {
         if($this->getServer()->getPluginManager()->getPlugin("PocketMoney") !== null) {
             $this->moneyManager = $this->getServer()->getPluginManager()->getPlugin("PocketMoney");
             $this->getLogger()->info("Money Manager set to PocketMoney");
-        }elseif($this->getServer()->getPluginManager()->getPlugin("EconomyAPI")) {
-            $this->moneyManager = $this->getServer()->getPluginManager()->getPlugin("EconomyAPI");
+        }elseif($this->getServer()->getPluginManager()->getPlugin("EconomyAPI") !== null) {
+            $this->moneyManager = EconomyAPI::getInstance();
             $this->getLogger()->info("Money Manager set to EconomyAPI");
         }else{
             $this->getLogger()->error("No Economy Plugin Detected!");
+            $this->getPluginLoader()->disablePlugin($this);
         }
         $this->getServer()->getPluginManager()->registerEvents(new EventListener($this, new DatabaseManager($this->getDataFolder() . 'ChestShop.sqlite3')), $this);
         $this->getLogger()->notice(TF::GREEN."Enabled!");
@@ -63,7 +64,7 @@ class ChestShop extends PluginBase {
                 if (stripos($constant, $name) !== false) {
                     $id = constant("pocketmine\\item\\Item::$constant");
                     $constant = str_replace("_", " ", $constant);
-                    $sender->sendMessage("ID:$id $constant");
+                    $sender->sendMessage("ID: $id $constant");
                 }
             }
             return true;

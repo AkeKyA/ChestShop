@@ -1,8 +1,6 @@
 <?php
 namespace ChestShop;
 
-use pocketmine\block\Block;
-
 class DatabaseManager {
     private $database;
     public function __construct($path) {

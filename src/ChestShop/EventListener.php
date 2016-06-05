@@ -67,7 +67,6 @@ class EventListener implements Listener {
                     return;
                 }
 
-                //TODO Improve this
                 $player->getInventory()->addItem(clone Item::get((int)$shopInfo['productID'], (int)$shopInfo['productMeta'], (int)$shopInfo['saleNum']));
 
                 $tmpNum = $shopInfo['saleNum'];
